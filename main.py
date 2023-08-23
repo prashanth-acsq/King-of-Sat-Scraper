@@ -55,8 +55,8 @@ def save_info(sat_name: str, csv: bool=False) -> None:
         final_required_data_1.append(required_data_1)
         final_required_data_2.append(required_data_2)
 
-    required_data_1_df = pd.DataFrame(data=final_required_data_1, columns=["S.No", "Pos", "Satellite", "Frequency", "Pol", "Txp", "Beam", "Standard", "Modulation", "SR/FEC_1", "SR/FEC_2", "Network_Bitrate", "NID", "TID"], index=None)
-    required_data_2_df = pd.DataFrame(data=None, columns=["S.No", "Channel Name"], index=None)
+    required_data_1_df: pd.DataFrame = pd.DataFrame(data=final_required_data_1, columns=["S.No", "Pos", "Satellite", "Frequency", "Pol", "Txp", "Beam", "Standard", "Modulation", "SR/FEC_1", "SR/FEC_2", "Network_Bitrate", "NID", "TID"], index=None)
+    required_data_2_df: pd.DataFrame = pd.DataFrame(data=None, columns=["S.No", "Channel Name"], index=None)
     required_data_2_df["S.No"] = s_no
     required_data_2_df["Channel Name"] = final_required_data_2
 
@@ -73,6 +73,12 @@ def save_info(sat_name: str, csv: bool=False) -> None:
 
 
 def main():
+    args: str = "--csv"
+
+    csv: bool = False
+
+    if args in sys.argv: csv = True
+
     satellites: list = [
         "nilesat201",
         "nilesat301",
@@ -82,11 +88,11 @@ def main():
         "badr5",
         "badr6",
         "badr7",
-	"arabsat5c",
+	    "arabsat5c",
     ]
 
     for satellite in satellites[:2]:
-        save_info(satellite)
+        save_info(satellite, csv)
 
     
 if __name__ == "__main__":
