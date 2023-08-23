@@ -79,7 +79,7 @@ def main():
 
     if args in sys.argv: csv = True
 
-    satellites: list = [
+    sat_names: list = [
         "nilesat201",
         "nilesat301",
         "e25b",
@@ -91,8 +91,8 @@ def main():
 	    "arabsat5c",
     ]
 
-    for satellite in satellites[:2]:
-        save_info(satellite, csv)
+    for sat_name in sat_names:
+        save_info(sat_name, csv)
 
     
 if __name__ == "__main__":
