@@ -88,7 +88,7 @@ def main():
         "badr5",
         "badr6",
         "badr7",
-	    "arabsat5c",
+	"arabsat5c",
     ]
 
     for sat_name in sat_names:
