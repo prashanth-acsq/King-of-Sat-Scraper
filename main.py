@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 OUTPUT_PATH: str = os.path.join(os.path.abspath(os.path.dirname(__file__)), "output")
 
 
-def save_info(sat_name: str, csv: bool=False) -> None:
+def save_info(sat_name: str) -> None:
     response: requests.Response = requests.get(f"https://en.kingofsat.net/sat-{sat_name}.php")
     html_doc = response.content
     soup = BeautifulSoup(html_doc, "html.parser")
@@ -59,25 +59,14 @@ def save_info(sat_name: str, csv: bool=False) -> None:
     required_data_2_df: pd.DataFrame = pd.DataFrame(data=None, columns=["S.No", "Channel Name"], index=None)
     required_data_2_df["S.No"] = s_no
     required_data_2_df["Channel Name"] = final_required_data_2
-
-    if csv:
-        required_data_1_df.to_csv(f"{OUTPUT_PATH}/satellite_info_{sat_name}.csv", index=False)
-        required_data_2_df.to_csv(f"{OUTPUT_PATH}/channels_{sat_name}.csv", index=False)
-        required_data_1_df["Channels"] = final_required_data_2
-        required_data_1_df.to_csv(f"{OUTPUT_PATH}/satellite_and_channels_info_{sat_name}.csv", index=False)
-    else:
-        required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_info_{sat_name}.xlsx", index=False)
-        required_data_2_df.to_excel(f"{OUTPUT_PATH}/channels_{sat_name}.xlsx", index=False)
-        required_data_1_df["Channels"] = final_required_data_2
-        required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_and_channels_info_{sat_name}.xlsx", index=False)
+    
+    required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_info_{sat_name}.xlsx", index=False)
+    required_data_2_df.to_excel(f"{OUTPUT_PATH}/channels_{sat_name}.xlsx", index=False)
+    required_data_1_df["Channels"] = final_required_data_2
+    required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_and_channels_info_{sat_name}.xlsx", index=False)
 
 
 def main():
-    args: str = "--csv"
-
-    csv: bool = False
-
-    if args in sys.argv: csv = True
 
     sat_names: list = [
         "nilesat201",
@@ -92,7 +81,7 @@ def main():
     ]
 
     for sat_name in sat_names:
-        save_info(sat_name, csv)
+        save_info(sat_name)
 
     
 if __name__ == "__main__":
