@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore")
 OUTPUT_PATH: str = os.path.join(os.path.abspath(os.path.dirname(__file__)), "output")
 
 
-def save_info(sat_name: str) -> None:
+def save_info(sat_name: str, test: bool) -> None:
     response: requests.Response = requests.get(f"https://en.kingofsat.net/sat-{sat_name}.php")
     html_doc = response.content
     soup = BeautifulSoup(html_doc, "html.parser")
@@ -55,18 +55,23 @@ def save_info(sat_name: str) -> None:
         final_required_data_1.append(required_data_1)
         final_required_data_2.append(required_data_2)
 
-    required_data_1_df: pd.DataFrame = pd.DataFrame(data=final_required_data_1, columns=["S.No", "Pos", "Satellite", "Frequency", "Pol", "Txp", "Beam", "Standard", "Modulation", "SR/FEC_1", "SR/FEC_2", "Network_Bitrate", "NID", "TID"], index=None)
-    required_data_2_df: pd.DataFrame = pd.DataFrame(data=None, columns=["S.No", "Channel Name"], index=None)
-    required_data_2_df["S.No"] = s_no
-    required_data_2_df["Channel Name"] = final_required_data_2
-    
-    required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_info_{sat_name}.xlsx", index=False)
-    required_data_2_df.to_excel(f"{OUTPUT_PATH}/channels_{sat_name}.xlsx", index=False)
-    required_data_1_df["Channels"] = final_required_data_2
-    required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_and_channels_info_{sat_name}.xlsx", index=False)
+    if not test:
+        required_data_1_df: pd.DataFrame = pd.DataFrame(data=final_required_data_1, columns=["S.No", "Pos", "Satellite", "Frequency", "Pol", "Txp", "Beam", "Standard", "Modulation", "SR/FEC_1", "SR/FEC_2", "Network_Bitrate", "NID", "TID"], index=None)
+        required_data_2_df: pd.DataFrame = pd.DataFrame(data=None, columns=["S.No", "Channel Name"], index=None)
+        required_data_2_df["S.No"] = s_no
+        required_data_2_df["Channel Name"] = final_required_data_2
+        
+        required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_info_{sat_name}.xlsx", index=False)
+        required_data_2_df.to_excel(f"{OUTPUT_PATH}/channels_{sat_name}.xlsx", index=False)
+        required_data_1_df["Channels"] = final_required_data_2
+        required_data_1_df.to_excel(f"{OUTPUT_PATH}/satellite_and_channels_info_{sat_name}.xlsx", index=False)
 
 
 def main():
+
+    args: str = "--test"
+    test = False
+    if args in sys.argv: test = True
 
     sat_names: list = [
         "nilesat201",
@@ -77,11 +82,11 @@ def main():
         "badr5",
         "badr6",
         "badr7",
-	"arabsat5c",
+	    "arabsat5c",
     ]
 
     for sat_name in sat_names:
-        save_info(sat_name)
+        save_info(sat_name, test)
 
     
 if __name__ == "__main__":
